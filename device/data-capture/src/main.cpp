@@ -1,37 +1,52 @@
 #include "LSM6DS3.h"
 #include "Wire.h"
- 
-//Create a instance of class LSM6DS3
-LSM6DS3 myIMU(I2C_MODE, 0x6A);    //I2C device address 0x6A
- 
- 
-#define CONVERT_G_TO_MS2    9.80665f
-#define FREQUENCY_HZ        50
-#define INTERVAL_MS         (1000 / (FREQUENCY_HZ + 1))
- 
+
+// Create an instance of the LSM6DS3 accelerometer connected via I2C at address 0x6A
+LSM6DS3 accelerometer(I2C_MODE, 0x6A);
+
+// Accelerometer values need to be converted from G values to Meters per second
+#define CONVERT_G_TO_MS2 9.80665f
+
+// Data needs to be sent at a standard frequency of 50Hz so the data
+// forwarder can capture data at a fixed rate
+#define FREQUENCY_HZ 50
+#define INTERVAL_MS (1000 / (FREQUENCY_HZ + 1))
+
+// Track the last time data was sent to the serial port to fix the output at 50Hz
 static unsigned long last_interval_ms = 0;
- 
-void setup() {
-    // put your setup code here, to run once:
+
+// The setup code for the Arduino app. This is run once when the board boots up
+void setup()
+{
+    // Start the serial output and wait for a connection on the other side
     Serial.begin(115200);
     while (!Serial);
-    //Call .begin() to configure the IMUs
-    if (myIMU.begin() != 0) {
+
+    // Begin the accelerometer
+    if (accelerometer.begin() != 0)
+    {
         Serial.println("Device error");
-    } else {
+    }
+    else
+    {
         Serial.println("Device OK!");
     }
 }
- 
-void loop() {
- 
-    if (millis() > last_interval_ms + INTERVAL_MS) {
+
+// The loop code for the Arduino app. This is run repeatedly
+void loop()
+{
+    // Check if we have been enough time to send data at 50Hz
+    if (millis() > last_interval_ms + INTERVAL_MS)
+    {
+        // Get the current time stamp
         last_interval_ms = millis();
- 
-        Serial.print(myIMU.readFloatGyroX() * CONVERT_G_TO_MS2,4);
+
+        // Print accelerometer data to the serial port for the data forwarder to read
+        Serial.print(accelerometer.readFloatGyroX() * CONVERT_G_TO_MS2, 4);
         Serial.print('\t');
-        Serial.print(myIMU.readFloatGyroY() * CONVERT_G_TO_MS2,4);
+        Serial.print(accelerometer.readFloatGyroY() * CONVERT_G_TO_MS2, 4);
         Serial.print('\t');
-        Serial.println(myIMU.readFloatGyroZ() * CONVERT_G_TO_MS2,4);
+        Serial.println(accelerometer.readFloatGyroZ() * CONVERT_G_TO_MS2, 4);
     }
 }
