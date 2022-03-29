@@ -256,20 +256,23 @@ namespace BitFit
         /// <param name="e"></param>
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await adapter.StartScanningForDevicesAsync();
-            // If we are already connected, disconnect
-            if (fitTrack is not null)
-            {
-                await adapter.DisconnectDeviceAsync(fitTrack);
-            }
+            // Stop scanning if we are alread
+            await adapter.StopScanningForDevicesAsync();
 
+            // If we have a characteristic, stop listening for updates
             if (activityCharacteristic is not null)
             {
                 activityCharacteristic.ValueUpdated -= ValueUpdated;
                 await activityCharacteristic.StopUpdatesAsync();
             }
 
-            await adapter.StopScanningForDevicesAsync();
+            // If we are already connected, disconnect
+            if (fitTrack is not null)
+            {
+                await adapter.DisconnectDeviceAsync(fitTrack);
+            }
+
+            // Re-start scanning for devices
             await adapter.StartScanningForDevicesAsync();
         }
     }
