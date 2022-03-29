@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BitFit.MainPage">
+    <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+    
+        <StackLayout VerticalOptions="StartAndExpand">
+            <Frame BackgroundColor="#2196F3" Padding="24,48,24,24" CornerRadius="0">
+                <Label Text="BitFit" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
+            </Frame>
+            <StackLayout Orientation="Horizontal" Padding="30,10,30,10">
+                <Label Text="BLE:"/>
+                <Label Text="Disconnected" TextColor="Red" x:Name="BleConnectionLabel"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Padding="30,10,30,10">
+                <Label Text="IoT Central:" />
+                <Label Text="Disconnected" TextColor="Red" x:Name="IoTConnectionLabel"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Padding="30,10,30,10">
+                <Label Text="Current Activity:" />
+                <Label Text="None" TextColor="White" x:Name="CurrentActivityLabel"/>
+            </StackLayout>
+        </StackLayout>
+
+        <Button Text="Rescan" VerticalOptions="End" Padding="40" Clicked="Button_Clicked"/>
+    </StackLayout>
+
+</ContentPage>
